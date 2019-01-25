@@ -19,7 +19,7 @@ namespace ToDoListApp
 
             while (true) 
             {
-                Console.WriteLine("\nPlease enter your name:");
+                Console.Write("\nPlease enter your name: ");
                 username = Console.ReadLine();
                 User myUser = new User();
                 ToDoList toDoList = new ToDoList();
