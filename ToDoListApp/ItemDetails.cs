@@ -38,5 +38,10 @@ namespace ToDoListApp
             this.description = _description;
         }
 
+        public void ShowItemDetails(int _refnum)
+        {
+            Console.WriteLine("Item#{0}: {1} \nItem Description: {2}.", refnum, name, description);
+        }
+
     }
 }

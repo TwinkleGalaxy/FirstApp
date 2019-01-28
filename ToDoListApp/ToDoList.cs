@@ -47,6 +47,13 @@ namespace ToDoListApp
             this.owner = username;
             this.itemdetails = new Dictionary<int, ItemDetails>(); // Key: refnum, Value: ItemDetails struct
         }
+        public void ShowListItems()
+        {
+            foreach (var item in itemdetails)
+            {
+                Console.WriteLine("Item#{0}: {1}", item.Key, item.Value.Name);
+            }
+        }
 
         public void Create(User user, string _listTitle)
         {

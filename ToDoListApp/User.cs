@@ -35,9 +35,20 @@ namespace ToDoListApp
             this.todolist = new List<ToDoList>();
         }
 
-        public void GetUserInfoByUserName(Dictionary<string, User> UsersMap, out User user)
+        public void ShowAllUserLists()
         {
+            for (var i = 0; i < todolist.Count; i++)
+            {
+                // Console.WriteLine($"List#{todolist[i]}: todolist[i].Title"); // VS 2013 doesn't support c#6 - string interpolation 
+                Console.WriteLine("List#{0}: {1}", todolist[i], todolist[i].Title);
+            }
+        }
+
+        public User GetUserInfoByUserName(Dictionary<string, User> UsersMap)
+        {
+            User user = new User();
             UsersMap.TryGetValue(username, out user);
+            return user;
         }
 
         public User CreateUser(string _username, Dictionary<string, User> UsersMap)

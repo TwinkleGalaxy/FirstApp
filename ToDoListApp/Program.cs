@@ -14,6 +14,7 @@ namespace ToDoListApp
             string username = "";
             string listTitle = "";
             var UsersMap = new Dictionary<string, User>();
+            ToDoList toDoList = new ToDoList();
 
             Console.WriteLine("         TODO List  ");
 
@@ -21,46 +22,48 @@ namespace ToDoListApp
             {
                 Console.Write("\nPlease enter your username: ");
                 username = Console.ReadLine();
-                User myUser = new User();
-                ToDoList toDoList = new ToDoList();
+                User myUser = new User(username);
 
                 if (UsersMap.Count != 0) // Search if the user is already existed
                 {
-                    myUser.GetUserInfoByUserName(UsersMap, out myUser);
+                    myUser = myUser.GetUserInfoByUserName(UsersMap);
                 }
                 else
                 {
                     myUser = myUser.CreateUser(username, UsersMap);
                 }
 
-                
-                    if (myUser.Todolist.Count() != 0)
-                    {
-
-                    }
-                    Console.WriteLine("");
-                    Console.WriteLine("\nTo create your first ToDo list Press: 1");
+                if (myUser.Todolist.Count() != 0)
+                {
+                    Console.WriteLine("\nWelcome {0}, you have already had {1} \n To view your lists Press: 2",
+                        myUser.Username, myUser.Todolist.Count());
+                    Console.WriteLine("To create a new ToDo list Press: 1", myUser.Username);
+                    Console.WriteLine("To end the programm Press: 0");
+                }
+                else
+                {
+                    Console.WriteLine("\nWelcome {0}, To create your first ToDo list Press: 1", myUser.Username);
                     Console.WriteLine("To go back Press: 2");
                     Console.WriteLine("To end the programm Press: 0");
+                }
+
 
                     answer = Console.ReadLine();
 
-                    if (answer == "2")
-                    {
-                        continue;
-                    }
-                    else if (answer == "0")
+                    if (answer == "0")
                     {
                         break;
                     }
                     else if (answer == "1")
                     {
-                        Console.WriteLine("Please enter the list name: ");
+                        Console.Write("Enter the list name: ");
                         listTitle = Console.ReadLine();
                         toDoList.Create(myUser, listTitle);
                     }
-                    else
-                        Console.WriteLine("Please enter: \n1 for creating a ToDo list, 2 for going back, or 0 for ending the program");
+                    else if (answer == "2")
+                    {
+                        continue;
+                    }
 
                 }
             } 
