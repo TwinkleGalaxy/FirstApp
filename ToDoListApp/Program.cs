@@ -8,11 +8,17 @@ namespace ToDoListApp
 {
     class Program
     {
+        //private enum MainMenuAction
+        //{
+        //    exit = 0,
+        //    viewLists = 1,
+        //    creatList = 2,
+        //    repeat = 3
+        //}
         static void Main(string[] args)
         {        
-            string answer = "";
+            string userChoice = "";
             string username = "";
-            string listTitle = "";
             var UsersMap = new Dictionary<string, User>();
             ToDoList toDoList = new ToDoList();
 
@@ -33,40 +39,67 @@ namespace ToDoListApp
                     myUser = myUser.CreateUser(username, UsersMap);
                 }
 
-                if (myUser.Todolist.Count() != 0)
-                {
-                    Console.WriteLine("\nWelcome {0}, you have already had {1} \n To view your lists Press: 2",
-                        myUser.Username, myUser.Todolist.Count());
-                    Console.WriteLine("To create a new ToDo list Press: 1", myUser.Username);
-                    Console.WriteLine("To end the programm Press: 0");
-                }
-                else
-                {
-                    Console.WriteLine("\nWelcome {0}, To create your first ToDo list Press: 1", myUser.Username);
-                    Console.WriteLine("To go back Press: 2");
-                    Console.WriteLine("To end the programm Press: 0");
-                }
+                Console.WriteLine("\nWelcome {0}", myUser.Username);
+                AskingForUserChoice(myUser);
+                userChoice = Console.ReadLine();
 
-
-                    answer = Console.ReadLine();
-
-                    if (answer == "0")
+                    if (userChoice == "1")
                     {
-                        break;
+
                     }
-                    else if (answer == "1")
+                    else if (userChoice == "2")
                     {
-                        Console.Write("Enter the list name: ");
-                        listTitle = Console.ReadLine();
-                        toDoList.Create(myUser, listTitle);
+                        ListFilling(myUser, toDoList);
+                        AskingForUserChoice(myUser);
                     }
-                    else if (answer == "2")
+                    else if (userChoice == "3")
                     {
                         continue;
                     }
+                    else if (userChoice == "0")
+                    {
+                        break;
+                    }
 
                 }
+            }
+
+        private static void AskingForUserChoice(User myUser)
+        {
+            if (myUser.Todolist.Count() != 0)
+            {
+                Console.WriteLine("You have already had {1} \n ", myUser.Username, myUser.Todolist.Count());
+                Console.WriteLine("To view your lists Press: 1");
+            }
+            Console.WriteLine("To create a new ToDo list Press: 2", myUser.Username);
+            Console.WriteLine("To go back Press: 3");
+            Console.WriteLine("To end the programm Press: 0");
+        }
+
+        private static void ListFilling(User myUser, ToDoList toDoList)
+        {
+            Console.WriteLine("");
+            Console.Write("Enter the list name: ");
+            string listTitle = Console.ReadLine();
+            toDoList = toDoList.Create(myUser, listTitle);
+            Console.WriteLine("");
+            Console.WriteLine("Add items:");
+            int i = 1;
+            do
+            {
+                Console.WriteLine("");
+                Console.Write("Item #{0}: ", i);
+                ItemDetails itemdetails = new ItemDetails();
+                itemdetails.Name = Console.ReadLine();
+                Console.Write("Enter item description: ");
+                itemdetails.Description = Console.ReadLine();
+
+                toDoList.Itemdetails.Add(i, itemdetails);
+                i++;
+
+                Console.Write("Add another item? y/n ==> ");
             } 
-            
+            while (Console.ReadLine() != "n" || Console.ReadLine() != "N");
+        }
         }
     }

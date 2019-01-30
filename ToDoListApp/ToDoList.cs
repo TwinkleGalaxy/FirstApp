@@ -55,10 +55,11 @@ namespace ToDoListApp
             }
         }
 
-        public void Create(User user, string _listTitle)
+        public ToDoList Create(User user, string _listTitle)
         {
             ToDoList newList = new ToDoList(_listTitle, user.Username);
              user.Todolist.Add(newList);
+             return newList;
         }
 
         public void UpdateToDoList(User user, ToDoList newToDoList, int index)
