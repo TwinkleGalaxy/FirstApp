@@ -52,6 +52,7 @@ namespace ToDoListApp
             foreach (var item in itemdetails)
             {
                 Console.WriteLine("Item#{0}: {1}", item.Key, item.Value.Name);
+
             }
         }
 

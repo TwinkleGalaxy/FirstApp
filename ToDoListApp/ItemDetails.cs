@@ -38,9 +38,20 @@ namespace ToDoListApp
             this.description = _description;
         }
 
-        public void ShowItemDetails(int _refnum)
+        public void ShowItemDetails()
         {
             Console.WriteLine("Item#{0}: {1} \nItem Description: {2}.", refnum, name, description);
+        }
+
+        public void UpdateItem(User user, int listIndex, ItemDetails newItemDetails, int itemNum)
+        {
+            user.Todolist[listIndex].Itemdetails[itemNum] = newItemDetailss;
+        }
+
+        public void DeleteItem(User user, int listIndex, int itemNum)
+        {
+            user.Todolist[listIndex].Itemdetails.Remove(itemNum);
+
         }
 
     }

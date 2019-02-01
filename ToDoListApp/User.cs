@@ -41,6 +41,7 @@ namespace ToDoListApp
             {
                 // Console.WriteLine($"List#{todolist[i]}: todolist[i].Title"); // VS 2013 doesn't support c#6 - string interpolation 
                 Console.WriteLine("List#{0}: {1}", todolist[i], todolist[i].Title);
+                Console.WriteLine("The list has {0} items.", todolist[i - 1].Itemdetails.Count);
             }
         }
 
