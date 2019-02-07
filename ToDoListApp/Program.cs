@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToDoListApp.DB;
+using ToDoListApp.Repository;
 
 namespace ToDoListApp
 {
@@ -15,13 +17,20 @@ namespace ToDoListApp
         //    creatList = 2,
         //    repeat = 3
         //}
+
+        public static UserRepository userRep = new UserRepository();
+        public static ToDoListRepository toDoListRep = new ToDoListRepository();
+        public static ItemDetailsRepository itemDetailsRep = new ItemDetailsRepository();
+
         static void Main(string[] args)
         {        
             string userChoice = "";
             string username = "";
-            var UsersMap = new Dictionary<string, User>();
-            var toDoList = new ToDoList();
-            var itemDetailsMap = new Dictionary<int, ItemDetails>();
+
+
+
+            List<ToDoList> userToDoLists = new List<ToDoList>();
+            List<ItemDetails> toDoListItems = new List<ItemDetails>();
 
             Console.WriteLine("         TODO List  ");
 
@@ -30,23 +39,25 @@ namespace ToDoListApp
                 Console.Write("\nPlease enter your username: ");
                 username = Console.ReadLine();
                 User myUser = new User(username);
+                userRep.Add(myUser);
 
-                if (UsersMap.Count != 0) // Search if the user is already existed
+                if (DB.DB.UsersMap.Count > 1) // Search if the user is already existed
                 {
-                    myUser = myUser.GetUserInfoByUserName(UsersMap);
+                    myUser = userRep.GetByName(username);
                 }
-                else
-                {
-                    myUser = myUser.CreateUser(username, UsersMap);
-                }
-
                 Console.WriteLine("\nWelcome {0}", myUser.Username);
                 AskingForUserChoice_MainMenu(myUser);
                 userChoice = Console.ReadLine();
 
-                if (userChoice == "1") // view all the lists
+                if (userChoice == "1") // view all the user's toDoLists
                 {
-                    myUser.ShowAllUserLists();
+                    userToDoLists = toDoListRep.GetUserToDoLists(myUser).ToList<ToDoList>();
+                    
+                    // show 
+                    for (var i = 1; i <= userToDoLists.Count(); i++)
+                    {
+                        Console.WriteLine("List#{0}: {1}", i, userToDoLists[i].Title);
+                    }
 
                     Console.Write("Do you want to view a list items? y/n ==> ");
                     if (Console.ReadLine() == "n" || Console.ReadLine() == "N")
@@ -60,7 +71,7 @@ namespace ToDoListApp
                         int.TryParse(Console.ReadLine(), out userAnswer);
                         int listIndex = userAnswer - 1;
 
-                        if (myUser.Todolist[listIndex].Itemdetails.Count() == 0) // the list has no items
+                        if (userToDoLists[listIndex].ItemsRefNums.Count() == 0) // the list has no items
                         {
                             Console.Write("\nThis list has no items.");
                             Console.Write("\nTo add items, Press 1:");
@@ -74,7 +85,13 @@ namespace ToDoListApp
 
                         else // the list has items
                         {
-                            myUser.Todolist[listIndex].ShowListItems();
+                            toDoListItems = itemDetailsRep.GetToDoListItems(userToDoLists[listIndex]).ToList<ItemDetails>();
+                            // show 
+                            for (var i = 1; i <= toDoListItems.Count(); i++)
+                            {
+                                Console.WriteLine("Item#{0}: {1}", i, toDoListItems[i].Name);
+                            }
+                            
                             Console.WriteLine("\nDo you want to add another item to the list, view an item details, \nupdate an existed item, or delete an item?");
 
                             Console.WriteLine("\nIf yes, press 1 for add, 2 for view details, 3 for update, 4 for delete");
@@ -110,7 +127,7 @@ namespace ToDoListApp
 
         private static void AskingForUserChoice_MainMenu(User myUser)
         {
-            if (myUser.Todolist.Count() != 0)
+            if (myUser.TodolistIds.Count() != 0)
             {
                 Console.WriteLine("You have already had {1} \n ", myUser.Username, myUser.Todolist.Count());
                 Console.WriteLine("To view your lists Press: 1");
@@ -129,7 +146,7 @@ namespace ToDoListApp
         {
             Console.Write("\nEnter the list name: ");
             string listTitle = Console.ReadLine();
-            toDoList = toDoList.Create(myUser, listTitle);
+            toDoListRep.Add(toDoList);
             AddingItems(myUser, toDoList);
         }
 
@@ -140,12 +157,12 @@ namespace ToDoListApp
             do
             {
                 Console.Write("\nItem #{0}: ", i);
-                ItemDetails itemdetails = new ItemDetails();
-                itemdetails.Name = Console.ReadLine();
+                string itemName = Console.ReadLine();
                 Console.Write("Enter item description: ");
-                itemdetails.Description = Console.ReadLine();
+                string itemDescription = Console.ReadLine();
 
-                toDoList.Itemdetails.Add(i, itemdetails);
+                ItemDetails itemDetails = new ItemDetails(itemName, itemDescription);
+                itemDetailsRep.Add(itemDetails);
 
                 Console.Write("Add another item? y/n ==> ");
                 if (Console.ReadLine() == "n" || Console.ReadLine() == "N")
@@ -208,4 +225,3 @@ namespace ToDoListApp
         }
     } 
 
-// Remaining List CRUD & User CRUD

@@ -8,11 +8,11 @@ namespace ToDoListApp
 {
     public class ItemDetails
     {
-        private int refnum;
+        private string refnum;
         private string name;
         private string description;
 
-        public int Refnum
+        public string Refnum
         {
             get { return refnum; }
             set { refnum = value; }
@@ -30,29 +30,10 @@ namespace ToDoListApp
             set { description = value; }
         }
 
-        public ItemDetails()
-        {}
         public ItemDetails(string _name, string _description)
         {
             this.name = _name;
             this.description = _description;
         }
-
-        public void ShowItemDetails()
-        {
-            Console.WriteLine("Item#{0}: {1} \nItem Description: {2}.", refnum, name, description);
-        }
-
-        public void UpdateItem(User user, int listIndex, ItemDetails newItemDetails, int itemNum)
-        {
-            user.Todolist[listIndex].Itemdetails[itemNum] = newItemDetailss;
-        }
-
-        public void DeleteItem(User user, int listIndex, int itemNum)
-        {
-            user.Todolist[listIndex].Itemdetails.Remove(itemNum);
-
-        }
-
     }
 }
