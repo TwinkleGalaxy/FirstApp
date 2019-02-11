@@ -35,9 +35,9 @@ namespace ToDoListApp.Repository
             DB.DB.UsersMap[username] = user;
         }
 
-        public void Delete(string username)
+        public void Delete(User myUser)
         {
-            DB.DB.UsersMap.Remove(username);
+            DB.DB.UsersMap.Remove(myUser.Username);
         }
     }
 }

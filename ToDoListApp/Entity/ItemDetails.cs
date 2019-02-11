@@ -11,6 +11,7 @@ namespace ToDoListApp
         private string refnum;
         private string name;
         private string description;
+        private string listId;
 
         public string Refnum
         {
@@ -29,11 +30,18 @@ namespace ToDoListApp
             get { return description; }
             set { description = value; }
         }
-
-        public ItemDetails(string _name, string _description)
+        public string ListId
         {
+            get { return listId; }
+            set { listId = value; }
+        }
+
+        public ItemDetails(string _name, string _description, string _listId)
+        {
+            this.refnum = Guid.NewGuid().ToString();
             this.name = _name;
             this.description = _description;
+            this.listId = _listId;
         }
     }
 }

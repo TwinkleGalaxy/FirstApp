@@ -7,7 +7,7 @@ namespace ToDoListApp
     {
         private string id;
         private string username;
-        private List<string> todolistsIds;
+        private List<string> toDoListsIds;
 
         public string Id
         {
@@ -20,16 +20,17 @@ namespace ToDoListApp
             get { return username; }
             set { username = value; }
         }
-
-        public List<string> TodolistIds
+        public List<string> ToDoListsIds
         {
-            get { return todolistsIds; }
+            get { return toDoListsIds; }
+            set { toDoListsIds = value; }
         }
+
         public User(string _username) 
         {
             this.id = Guid.NewGuid().ToString();
             this.username = _username;
-            this.todolistsIds = new List<string>();
+            this.toDoListsIds = new List<string>();
         }
     }
 

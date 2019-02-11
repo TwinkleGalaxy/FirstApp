@@ -10,12 +10,7 @@ namespace ToDoListApp.Repository
     {
         public IList<ToDoList> GetUserToDoLists(User user)
         {
-            IList<ToDoList> userToDoLists = new List<ToDoList>();
-            for (var i = 0; i < user.TodolistIds.Count(); i++)
-            {
-                DB.DB.ToDoListsList.First(x => x.Id == user.TodolistIds[i]);
-            }
-            return userToDoLists;
+            return DB.DB.ToDoListsList.Where(x => x.UserId == user.Id).ToList<ToDoList>();
         }
         public IList<ToDoList> GetAll()
         {
@@ -37,9 +32,9 @@ namespace ToDoListApp.Repository
             DB.DB.ToDoListsList[index] = newToDoList;
         }
 
-        public void Delete(string listTitle)
+        public void Delete(ToDoList todolist)
         {
-            DB.DB.ToDoListsList.Remove(GetByName(listTitle));
+            DB.DB.ToDoListsList.Remove(todolist);
         }
     }
 }

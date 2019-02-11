@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ToDoListApp.DB;
 using ToDoListApp.Repository;
+using ToDoListApp.Service;
 
 namespace ToDoListApp
 {
@@ -21,6 +22,10 @@ namespace ToDoListApp
         public static UserRepository userRep = new UserRepository();
         public static ToDoListRepository toDoListRep = new ToDoListRepository();
         public static ItemDetailsRepository itemDetailsRep = new ItemDetailsRepository();
+
+        public static UserService userService = new UserService();
+        public static ToDoListService toDoListService = new ToDoListService();
+        public static ItemDetailsService itemDetailsService = new ItemDetailsService();
 
         static void Main(string[] args)
         {        
@@ -40,16 +45,14 @@ namespace ToDoListApp
                 username = Console.ReadLine();
                 User myUser = new User(username);
                 userRep.Add(myUser);
+                myUser = userService.SearchIfExisted(myUser); // return user if existed
 
-                if (DB.DB.UsersMap.Count > 1) // Search if the user is already existed
-                {
-                    myUser = userRep.GetByName(username);
-                }
                 Console.WriteLine("\nWelcome {0}", myUser.Username);
                 AskingForUserChoice_MainMenu(myUser);
                 userChoice = Console.ReadLine();
 
-                if (userChoice == "1") // view all the user's toDoLists
+
+                if (userChoice == "v") // view all the user's toDoLists
                 {
                     userToDoLists = toDoListRep.GetUserToDoLists(myUser).ToList<ToDoList>();
                     
@@ -71,7 +74,21 @@ namespace ToDoListApp
                         int.TryParse(Console.ReadLine(), out userAnswer);
                         int listIndex = userAnswer - 1;
 
-                        if (userToDoLists[listIndex].ItemsRefNums.Count() == 0) // the list has no items
+                        if (toDoListService.checkToDoListHasItems(userToDoLists[listIndex])) // the list has items
+                        {
+                            toDoListItems = itemDetailsRep.GetToDoListItems(userToDoLists[listIndex]).ToList<ItemDetails>();
+                            // show 
+                            ShowItemDetails(toDoListItems);
+
+                            Console.WriteLine("\nDo you want to add another item to the list, view an item details, \nupdate an existed item, or delete an item?");
+
+                            Console.WriteLine("\nIf yes, press 1 for add, 2 for view details, 3 for update, 4 for delete");
+                            int.TryParse(Console.ReadLine(), out userAnswer);
+
+                            Item_CRUD(userAnswer, userToDoLists[listIndex], myUser, toDoListItems);           
+                        }
+
+                        else // the list has no items
                         {
                             Console.Write("\nThis list has no items.");
                             Console.Write("\nTo add items, Press 1:");
@@ -79,35 +96,23 @@ namespace ToDoListApp
                             int.TryParse(Console.ReadLine(), out userAnswer);
                             if (userAnswer == 1)
                             {
-                                Item_CRUD(userAnswer, listIndex, myUser);
+                                Item_CRUD(userAnswer, userToDoLists[listIndex], myUser, toDoListItems);
                             }
-                        }
-
-                        else // the list has items
-                        {
-                            toDoListItems = itemDetailsRep.GetToDoListItems(userToDoLists[listIndex]).ToList<ItemDetails>();
-                            // show 
-                            for (var i = 1; i <= toDoListItems.Count(); i++)
-                            {
-                                Console.WriteLine("Item#{0}: {1}", i, toDoListItems[i].Name);
-                            }
-                            
-                            Console.WriteLine("\nDo you want to add another item to the list, view an item details, \nupdate an existed item, or delete an item?");
-
-                            Console.WriteLine("\nIf yes, press 1 for add, 2 for view details, 3 for update, 4 for delete");
-                            int.TryParse(Console.ReadLine(), out userAnswer);
-
-                            Item_CRUD(userAnswer, listIndex, myUser);
                         }
 
                     }
                 }
-                else if (userChoice == "2") // create list
+                else if (userChoice == "c") // create list
                 {
-                    ListFilling(myUser, toDoList);
+                    Console.Write("\nEnter the list name: ");
+                    string listTitle = Console.ReadLine();
+                    ToDoList toDoList = toDoListService.ToDoListFilling(myUser, listTitle);
+
+                    AddingItems(toDoList);
+
                     AskingForUserChoice_MainMenu(myUser);
                 }
-                else if (userChoice == "3") // going back to enter another username
+                else if (userChoice == "1") // going back to enter another username
                 {
                     continue;
                 }
@@ -127,30 +132,31 @@ namespace ToDoListApp
 
         private static void AskingForUserChoice_MainMenu(User myUser)
         {
-            if (myUser.TodolistIds.Count() != 0)
+            if (userService.checkUserHasToDoLists(myUser))
             {
-                Console.WriteLine("You have already had {1} \n ", myUser.Username, myUser.Todolist.Count());
-                Console.WriteLine("To view your lists Press: 1");
+                Console.WriteLine("You have already had {1} \n ", myUser.Username, myUser.ToDoListsIds.Count());
+                Console.WriteLine("To view your lists Press: v");
             }
             AskingForUserChoice(myUser);
         }
 
         private static void AskingForUserChoice(User myUser)
         {
-            Console.WriteLine("To create a new ToDo list Press: 2", myUser.Username);
-            Console.WriteLine("To go back Press: 3");
+            Console.WriteLine("To create a ToDo list Press: c", myUser.Username);
+            Console.WriteLine("To go back Press: 1");
             Console.WriteLine("To end the programm Press: 0");
         }
 
-        private static void ListFilling(User myUser, ToDoList toDoList)
+        private static void ShowItemDetails(List<ItemDetails> toDoListItems)
         {
-            Console.Write("\nEnter the list name: ");
-            string listTitle = Console.ReadLine();
-            toDoListRep.Add(toDoList);
-            AddingItems(myUser, toDoList);
+            for (var i = 1; i <= toDoListItems.Count(); i++)
+            {
+                Console.WriteLine("Item#{0}: {1}", i, toDoListItems[i].Name);
+            }
         }
 
-        private static void AddingItems(User myUser, ToDoList toDoList)
+
+        private static void AddingItems(ToDoList toDoList)
         {
             Console.WriteLine("\nAdd items:");
             int i = 1;
@@ -161,8 +167,7 @@ namespace ToDoListApp
                 Console.Write("Enter item description: ");
                 string itemDescription = Console.ReadLine();
 
-                ItemDetails itemDetails = new ItemDetails(itemName, itemDescription);
-                itemDetailsRep.Add(itemDetails);
+                itemDetailsService.ItemsFilling(toDoList, itemName, itemDescription);
 
                 Console.Write("Add another item? y/n ==> ");
                 if (Console.ReadLine() == "n" || Console.ReadLine() == "N")
@@ -171,18 +176,13 @@ namespace ToDoListApp
             } while (true);
         }
 
-        private static void Item_CRUD(int userAnswer, int listIndex, User myUser)
+        private static void Item_CRUD(int userAnswer, ToDoList todolist, User myUser, List<ItemDetails> toDoListItems)
         {
             int itemNum;
-            //if (userAnswer != 1)
-            //{
-            //    Console.Write("Press the item number: ");
-            //    int.TryParse(Console.ReadLine(), out itemNum);
-            //}
             switch (userAnswer)
             {
                 case 1: // add
-                    AddingItems(myUser, myUser.Todolist[listIndex]);
+                    AddingItems(todolist);
                     break;
 
 
@@ -190,38 +190,89 @@ namespace ToDoListApp
                     Console.Write("Press the item number: ");
                     int.TryParse(Console.ReadLine(), out itemNum);
 
-                    myUser.Todolist[listIndex].Itemdetails[itemNum].ShowItemDetails();
+                    Console.WriteLine("Item Details: Descripton:", toDoListItems[itemNum-1].Description);
                     break;
 
                 case 3: // update
                     Console.Write("Press the item number: ");
                     int.TryParse(Console.ReadLine(), out itemNum);
 
-                    ItemDetails newItemDetails = new ItemDetails();
-                    newItemDetails.Refnum = itemNum;
-
                     Console.Write("/nDo you want to update the item name? y/n ==> ");
                     if (Console.ReadLine() == "y" || Console.ReadLine() == "Y")
                     {
                         Console.Write("Update item name: ");
-                        newItemDetails.Name = Console.ReadLine();
+                        toDoListItems[itemNum-1].Name = Console.ReadLine();
                     }
                     Console.Write("Update item description: ");
-                    newItemDetails.Description = Console.ReadLine();
+                    toDoListItems[itemNum].Description = Console.ReadLine();
 
-                    myUser.Todolist[listIndex].Itemdetails[itemNum].UpdateItem(myUser, listIndex, newItemDetails, itemNum);
+                    itemDetailsRep.Update(itemNum.ToString(), toDoListItems[itemNum-1]);
                     break;
 
                 case 4: // delete
                     Console.Write("Press the item number: ");
                     int.TryParse(Console.ReadLine(), out itemNum);
-                    myUser.Todolist[listIndex].Itemdetails[itemNum].ShowItemDetails();
+                    itemDetailsService.DeletingProcess(toDoListItems[itemNum - 1]);
+                    todolist.ItemsIds.Remove(toDoListItems[itemNum - 1].Refnum);
                     break;
 
                 default:
                     break;
             }
         }
+        private static void ToDoList_CRUD(int userAnswer, ToDoList todolist, User myUser)
+        {
+            switch (userAnswer)
+            {
+                case 1: // update
+                    Console.Write("Update list title, enter the new list name: ");
+                    string listTitle = todolist.Title;
+                    todolist.Title = Console.ReadLine();
+
+                    toDoListRep.Update(listTitle, todolist);
+                    break;
+
+                case 2: // delete
+                    Console.Write("For deleting a list press: d \nFor deleting all the lists press: a");
+                    if(Console.ReadLine() == "d")
+                    {
+                        toDoListService.DeletingProcess(todolist);
+                    }
+                    if (Console.ReadLine() == "a")
+                    {
+                        toDoListService.DeletingUserToDoLists(myUser);
+                    }
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private static void User_CRUD(int userAnswer, User myUser) // there is no add users or view all users beause we have no Admin
+        {
+            switch (userAnswer)
+            {
+                case 1: // update
+                    Console.Write("Update username, enter your new username: ");
+                    string username = myUser.Username;
+                    myUser.Username = Console.ReadLine();
+
+                    userRep.Update(username, myUser);
+                    break;
+
+                case 2: // delete
+                    Console.Write("Delete your account: ");
+                    userService.DeletingProcess(myUser);
+                    
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         }
     } 
 

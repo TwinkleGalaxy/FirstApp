@@ -8,6 +8,6 @@ namespace ToDoListApp.Repository
 {
     interface IItemDetailsRepository : IRepository<ItemDetails, string>
     {
-        IList<ItemDetails> GetToDoListItems(ToDoList toDoList);
+        IList<ItemDetails> GetToDoListItems(ToDoList todolist);
     }
 }

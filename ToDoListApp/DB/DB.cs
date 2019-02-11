@@ -14,17 +14,38 @@ namespace ToDoListApp.DB
 
         public static Dictionary<string, User> UsersMap
         {
-            get { return DB.usersMap; }
+            get
+            { 
+                if (DB.usersMap == null)
+                {
+                    return new Dictionary<string, User>();
+                }
+                return DB.usersMap; 
+            }
         }
 
         public static List<ToDoList> ToDoListsList
         {
-            get { return DB.toDoListsList; }
+            get 
+            {
+                if (DB.toDoListsList == null)
+                {
+                    return new List<ToDoList>();
+                }
+                return DB.toDoListsList; 
+            }
         }
 
         public static Dictionary<string, ItemDetails> ItemDetailsMap
         {
-            get { return DB.itemDetailsMap; }
+            get 
+            {
+                if (DB.itemDetailsMap == null)
+                {
+                    return new Dictionary<string, ItemDetails>();
+                }
+                return DB.itemDetailsMap; 
+            }
         }
     }
 }

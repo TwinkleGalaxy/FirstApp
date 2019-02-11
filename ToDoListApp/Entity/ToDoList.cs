@@ -10,39 +10,36 @@ namespace ToDoListApp
     {
         private string id;
         private string title;
-        private string userName;
-        private List<string> itemsRefNums;
+        private string userId;
+        private List<string> itemsIds;
 
         public string Id
         {
             get { return id; }
             set { id = value; }
         }
-
         public string Title
         {
             get { return title; }
             set { title = value; }
         }
-
-        public string UserName
+        public string UserId
         {
-            get { return userName; }
-            set { userName = value; }
+            get { return userId; }
+            set { userId = value; }
+        }
+        public List<string> ItemsIds
+        {
+            get { return itemsIds; }
+            set { itemsIds = value; }
         }
 
-        public List<string> ItemsRefNums
-        {
-            get { return itemsRefNums; }
-        }
-
-
-        public ToDoList(string username, string listTitle)
+        public ToDoList(string userId, string listTitle)
         {
             this.id = Guid.NewGuid().ToString();
             this.title = listTitle;
-            this.userName = username;
-            this.itemsRefNums = new List<string>();
+            this.userId = userId;
+            this.itemsIds = new List<string>();
         }
     }
 

@@ -15,6 +15,6 @@ namespace ToDoListApp.Repository
 
         void Update(Key key, T t);
 
-        void Delete(Key key);
+        void Delete(T t);
     }
 }

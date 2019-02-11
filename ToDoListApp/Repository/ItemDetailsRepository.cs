@@ -8,14 +8,9 @@ namespace ToDoListApp.Repository
 {
     class ItemDetailsRepository
     {
-        public IList<ItemDetails> GetToDoListItems(ToDoList toDoList)
+        public IList<ItemDetails> GetToDoListItems(ToDoList todolist)
         {
-            IList<ItemDetails> toDoListItems = new List<ItemDetails>();
-            for (var i = 0; i < toDoList.ItemsRefNums.Count(); i++)
-            {
-                DB.DB.ItemDetailsMap.First(x => x.Key == toDoList.ItemsRefNums[i]);
-            }
-            return toDoListItems;
+            return DB.DB.ItemDetailsMap.Values.Where(x => x.ListId == todolist.Id).ToList<ItemDetails>();
         }
 
         public IList<ItemDetails> GetAll()
@@ -28,10 +23,10 @@ namespace ToDoListApp.Repository
             return itemDetailsList;
         }
 
-        public ItemDetails GetByName(string refnum)
+        public ItemDetails GetByNum(string itemname)
         {
             ItemDetails itemDetails;
-            DB.DB.ItemDetailsMap.TryGetValue(refnum, out itemDetails);
+            DB.DB.ItemDetailsMap.TryGetValue(itemname, out itemDetails);
             return itemDetails;
         }
         public void Add(ItemDetails itemDetails)
@@ -44,9 +39,9 @@ namespace ToDoListApp.Repository
             DB.DB.ItemDetailsMap[itemname] = newItemDetails;
         }
 
-        public void Delete(string refnum)
+        public void Delete(ItemDetails itemDetails)
         {
-            DB.DB.ItemDetailsMap.Remove(refnum);
+            DB.DB.ItemDetailsMap.Remove(itemDetails.Refnum);
         }
     }
 }

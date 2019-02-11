@@ -41,15 +41,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ItemDetails.cs" />
+    <Compile Include="DB\DB.cs" />
+    <Compile Include="Entity\ItemDetails.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ToDoList.cs" />
-    <Compile Include="User.cs" />
+    <Compile Include="Entity\ToDoList.cs" />
+    <Compile Include="Entity\User.cs" />
+    <Compile Include="Repository\IItemDetailsRepository.cs" />
+    <Compile Include="Repository\IRepository.cs" />
+    <Compile Include="Repository\ItemDetailsRepository.cs" />
+    <Compile Include="Repository\IToDoListRepository.cs" />
+    <Compile Include="Repository\IUserRepository.cs" />
+    <Compile Include="Repository\ToDoListRepository.cs" />
+    <Compile Include="Repository\UserRepository.cs" />
+    <Compile Include="Service\IItemDetailsService.cs" />
+    <Compile Include="Service\IService.cs" />
+    <Compile Include="Service\ItemDetailsService.cs" />
+    <Compile Include="Service\IToDoListService.cs" />
+    <Compile Include="Service\IUserService.cs" />
+    <Compile Include="Service\ToDoListService.cs" />
+    <Compile Include="Service\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
