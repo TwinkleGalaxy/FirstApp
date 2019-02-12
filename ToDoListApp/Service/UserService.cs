@@ -17,19 +17,22 @@ namespace ToDoListApp.Service
         public static ToDoListService toDoListService = new ToDoListService();
 
         // Search if the user is already existed
-        public User SearchIfExisted(User myUser)
+        public User Get(string username)
         {
-            UserRepository userRep = new UserRepository();
             User user = null;
-            if (DB.DB.UsersMap.Count > 1)
+            if (DB.DB.UsersMap.Count >= 1)
             {
-                user = userRep.GetByName(myUser.Username);
+                user = userRep.GetByName(username);
             }
-            if (user != null)
+            if (user != null) // if found
             {
                 return user;
-            }
-            return myUser;
+            } 
+            // if not found or the may is empty
+            user = new User(username);
+            userRep.Add(user);
+            user.Username = "NewUser";
+            return user;
         }
 
         public bool checkUserHasToDoLists(User myUser)
@@ -39,6 +42,11 @@ namespace ToDoListApp.Service
                 return false;
             }
             return true;
+        }
+
+        public void Update(string username, User user)
+        {
+            userRep.Update(username, user);
         }
 
         public void DeletingProcess(User myUser)

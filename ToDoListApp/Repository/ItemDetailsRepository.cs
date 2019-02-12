@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ToDoListApp.Repository
 {
-    class ItemDetailsRepository
+    class ItemDetailsRepository : IItemDetailsRepository
     {
         public IList<ItemDetails> GetToDoListItems(ToDoList todolist)
         {
@@ -23,7 +23,7 @@ namespace ToDoListApp.Repository
             return itemDetailsList;
         }
 
-        public ItemDetails GetByNum(string itemname)
+        public ItemDetails GetByName(string itemname)
         {
             ItemDetails itemDetails;
             DB.DB.ItemDetailsMap.TryGetValue(itemname, out itemDetails);

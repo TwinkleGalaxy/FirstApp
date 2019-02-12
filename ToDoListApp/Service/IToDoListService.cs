@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace ToDoListApp.Service
 {
-    interface IToDoListService : IService<ToDoList>
+    interface IToDoListService : IService<ToDoList, string>
     {
         bool checkToDoListHasItems(ToDoList toDoList);
         ToDoList ToDoListFilling(User user, string listTitle);
+        
+        IList<ToDoList> GetUserToDoLists(User user);
 
         void DeletingUserToDoLists(User user);
     }

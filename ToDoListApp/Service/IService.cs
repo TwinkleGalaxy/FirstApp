@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace ToDoListApp.Service
 {
-    interface IService<T>
+    interface IService<T, Key>
     {
-        T SearchIfExisted(T t);
+        T Get(Key key);
+
+        void Update(Key key, T t);
+
         void DeletingProcess(T t);
     }
 }

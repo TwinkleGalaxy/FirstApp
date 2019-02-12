@@ -16,9 +16,9 @@ namespace ToDoListApp.Service
 
         public static ItemDetailsService itemDetailsService = new ItemDetailsService();
 
-        public ToDoList SearchIfExisted(ToDoList todolist)
+        public ToDoList Get(string todolistTitle)
         {
-            return todolist;
+            return toDoListRep.GetByName(todolistTitle);
         }
         public bool checkToDoListHasItems(ToDoList todolist)
         {
@@ -28,19 +28,22 @@ namespace ToDoListApp.Service
             }
             return true;
         }
+        
+        public IList<ToDoList> GetUserToDoLists(User user)
+        {
+            return toDoListRep.GetUserToDoLists(user);
+        }
 
         public ToDoList ToDoListFilling(User myUser, string listTitle)
         {
             ToDoList toDoList = new ToDoList(myUser.Username, listTitle);
             toDoListRep.Add(toDoList);
             myUser.ToDoListsIds.Add(toDoList.Id);
-
-            //if ()
-            //{
-                userRep.Update(myUser.Username, myUser);
-            //}
-            
             return toDoList;
+        }
+        public void Update(string toDoListTitle, ToDoList toDoList)
+        {
+            toDoListRep.Update(toDoListTitle, toDoList);
         }
 
         public void DeletingProcess(ToDoList todolist)

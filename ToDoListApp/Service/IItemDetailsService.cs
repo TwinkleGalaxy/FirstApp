@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ToDoListApp.Service
 {
-    interface IItemDetailsService : IService<ItemDetails>
+    interface IItemDetailsService : IService<ItemDetails, string>
     {
         ItemDetails ItemsFilling(ToDoList toDoList, string itemName, string itemDescription);
+
+        IList<ItemDetails> GetToDoListItems(ToDoList toDoList);
 
         void DeletingToDoListItems(ToDoList toDoList);
     }

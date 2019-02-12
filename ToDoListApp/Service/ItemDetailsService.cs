@@ -13,9 +13,9 @@ namespace ToDoListApp.Service
         public static ToDoListRepository toDoListRep = new ToDoListRepository();
         public static ItemDetailsRepository itemDetailsRep = new ItemDetailsRepository();
 
-        public ItemDetails SearchIfExisted(ItemDetails itemDetails)
+        public ItemDetails Get(string itemName)
         {
-            return itemDetails;
+            return itemDetailsRep.GetByName(itemName);
         }
         public ItemDetails ItemsFilling(ToDoList toDoList, string itemName, string itemDescription)
         {
@@ -24,9 +24,16 @@ namespace ToDoListApp.Service
             itemDetailsRep.Add(itemDetails);
             toDoList.ItemsIds.Add(itemDetails.Refnum);
 
-            toDoListRep.Update(toDoList.Title, toDoList);
-
             return itemDetails;
+        }
+
+        public IList<ItemDetails> GetToDoListItems(ToDoList toDoList)
+        {
+            return itemDetailsRep.GetToDoListItems(toDoList);
+        }
+        public void Update(string itemname, ItemDetails itemDetails)
+        {
+            itemDetailsRep.Update(itemname, itemDetails);
         }
 
         public void DeletingProcess(ItemDetails itemDetails)

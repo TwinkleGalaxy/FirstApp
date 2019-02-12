@@ -10,7 +10,7 @@ namespace ToDoListApp.Repository
     {
         public IList<ToDoList> GetUserToDoLists(User user)
         {
-            return DB.DB.ToDoListsList.Where(x => x.UserId == user.Id).ToList<ToDoList>();
+            return DB.DB.ToDoListsList.Where(x => x.UserId == user.Id).ToList<ToDoList>(); // a problem here
         }
         public IList<ToDoList> GetAll()
         {
